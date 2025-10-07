@@ -1,41 +1,17 @@
-SHELL := /bin/bash
-
-
 init:
-terraform init
-
-
-fmt:
-terraform fmt -recursive
-
-
-validate:
-terraform validate
-
+	terraform init
 
 plan:
-terraform plan -var="bucket_name=$(BUCKET_NAME)" -out=tfplan.binary
-
-
-show-plan-json: plan
-terraform show -json tfplan.binary > plan.json
-
-
-conftest: show-plan-json
-conftest test plan.json -p policy || (echo "Conftest failed" && exit 1)
-
+	terraform plan
 
 apply:
-terraform apply -auto-approve -var="bucket_name=$(BUCKET_NAME)"
-
-
-test: init
-cd test && go test -v
-
+	terraform apply -auto-approve
 
 destroy:
-terraform destroy -auto-approve -var="bucket_name=$(BUCKET_NAME)"
+	terraform destroy -auto-approve
 
+test:
+	go test ./test -v
 
-clean:
-rm -f tfplan.binary plan.json
+fmt:
+	terraform fmt -recursive
